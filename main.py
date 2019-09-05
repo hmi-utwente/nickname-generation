@@ -1,6 +1,8 @@
 import nltk as n
 from bs4 import BeautifulSoup as b
+from bs4 import NavigableString
 import urllib3 as url
+import urllib
 import random
 import pronouncing as p
 from metaphone import doublemetaphone as d
@@ -9,6 +11,8 @@ import eel
 import json
 import threading
 import time
+import pdb
+import re
 
 #%% Functions and global variables
 
@@ -869,7 +873,6 @@ def getMovieNicknames(word, firstName):
                     results.append(s[:-1])
     return results
 
-
 def getMovieNicknames2(word, firstName):
     word = word.lower()
     movies = []
@@ -906,35 +909,18 @@ def getMovieNicknames2(word, firstName):
     http_pool.close()
     html = r.data.decode('latin-1')
     soup = b(html, 'html.parser')
-
+    
+# original code by Arnav, modified by Lorenzo. If something breaks, check how the google page was changed and cry
     for a in soup.find_all("a"):
-        if a.has_attr('class') and a['class'] == ['Mlb36b']:
-            if "q=" in a['href']:
-                text = a['href']
-                text = text.split("q=")[1]
-                text = text.split("stick=")[0]
-                text = text.replace("+", " ")
-                text = text.replace("&", " ")
-                text = text.replace("%", " ")
-                text = text.replace("(film)", " ")
-                text = text.replace("(film)", " ")
-
-                if 3 < len(text.split(" ")) < 6:
-                # if len(text.split(" ")) > 3 and len(text.split(" ")) < 6:
-                    # lent = len(text.split(" "))
-                    c = 0
-                    temp = ""
-                    for i in text.split(" "):
-                        if i == "C3" or i == "A7" or i == "A8" or i == "E2" or i == "80":
-                            c += 10
-                        if i == "":
-                            c += 1
-                        if not i.isdigit():
-                            temp = temp + i + " "
-                    if c < 2:
-                        temp = temp[:-1]
-                        movies.append(temp)
-
+      #the HTML page has a div that contains the year, and "above" it there is a 
+      #div with the movie name. Everything is enclosed in a <a> tag.
+      #However, the div is often truncated, so we find the movie name in the link that
+      #the <a> tag points to
+      if a.has_attr('class') and "q=" in a['href'] and a.find_all(string=re.compile("^(19|20)\d+$")):
+       	searchparams = urllib.parse.parse_qs('http://www.google.com'+a['href'])
+       	if 'q' in searchparams:
+        	movies.append(searchparams['q'][0])
+    
     for i in movies:
         done = False
         if len(i) > 1:
@@ -953,7 +939,7 @@ def getMovieNicknames2(word, firstName):
 
     return results
 
-print(getMovieNicknames2("adventure", "Arnav"))
+#print(getMovieNicknames2("adventure", "Arnav"))
 
 def question1(text):
     # question1 = input("\n What is your name?\n")
@@ -1185,6 +1171,7 @@ def printBalance(file):
 printBalance("data.json")
 
 def smallTalk(index):
+    time.sleep(random.randint(3,5))
     eel.changeHTML(smalltalkies[index])
     global smalltalk
 

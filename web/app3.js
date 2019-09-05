@@ -7,10 +7,22 @@ var submitButton;
 
 var stalls = ["Hmmm alright let me put that down.....", "Storing that in my memory banks.....", "Let me just save that information....."];
 
-startButton.addEventListener("click", function (){
+document.getElementById("input").addEventListener("keydown", function(e) {
+    if (!e) { var e = window.event; }
+    
+    // Enter is pressed
+    if (e.keyCode == 13) { 
+    	e.preventDefault();
+    	console.log("clicking now the start button");
+    	submitButton.click(); 
+    }
+}, false);
 
+
+startButton.addEventListener("click", function (){
+    console.log("sending 'Ready'");
     eel.py_send("ready");
-    document.getElementById("input").innerHTML = "<input type=\"text\" id=\"input-text\"> <button id=\"submit\">Submit</button>";
+    document.getElementById("input").innerHTML = '<input type="text" id="input-text" style="display:none;"> <button id="submit">Submit</button>';
     
     submitButton = document.getElementById("submit");
     var inputText = document.getElementById("input-text");
@@ -37,46 +49,9 @@ function removeHTML(){
 
 eel.expose(changeHTML);
 function changeHTML(text){
-    outputText.innerText = text;
     console.log("changed the HTML");
+    outputText.innerText = text;
     submitButton.disabled = false;
+    console.log(document.getElementById("input-text"));
+    document.getElementById("input-text").style.display="";
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
