@@ -1,0 +1,42 @@
+normal table:
+action
+adventure
+animated
+biopic
+comedy
+crime/gangster
+cult
+drama
+melodrama
+epic historical period
+fantasy
+film noir
+detective/mystery
+horror/supernatural
+musical/dance
+romance
+sci-fi
+suspense/thriller
+war
+western
+
+exception 
+superhero look for all font
+size 2
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
